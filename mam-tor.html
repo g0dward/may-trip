@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Mam Tor + Great Ridge — Tue 5 May 2026</title>
+<title>Mam Tor — Tue 5 May 2026</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   :root {
@@ -42,59 +42,82 @@
     margin: 4px 0 0;
     letter-spacing: -0.01em;
   }
-  .stats {
+  #map {
+    width: 100%;
+    height: 45vh;
+    min-height: 280px;
+    background: var(--accent-soft);
+  }
+  .options {
+    padding: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .option {
+    padding: 16px 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .option:first-child { border-top: 0; }
+  .option .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .option h3 {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    margin: 4px 0 8px;
+    font-weight: 500;
+  }
+  .option .stats {
     display: flex;
-    gap: 16px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-bottom: 8px;
     font-size: 13px;
     color: var(--muted);
     flex-wrap: wrap;
   }
-  .stats span { padding-right: 16px; border-right: 1px solid var(--rule); }
-  .stats span:last-child { border-right: 0; }
-  #map {
-    width: 100%;
-    height: 50vh;
-    min-height: 320px;
-    background: var(--accent-soft);
-  }
+  .option .stats span { padding-right: 12px; border-right: 1px solid var(--rule); }
+  .option .stats span:last-child { border-right: 0; }
+  .option p { margin: 4px 0; font-size: 14px; }
   .legend {
-    padding: 16px 20px;
-    background: var(--paper);
-    border-bottom: 1px solid var(--rule);
+    padding: 14px 20px;
+    background: var(--accent-soft);
     font-size: 13px;
   }
-  .legend-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+  .legend-row { display: flex; align-items: center; gap: 10px; padding: 3px 0; }
   .pin {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: var(--accent);
     color: white;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     flex-shrink: 0;
   }
   .pin.start { background: #2a7a4a; }
   .pin.lunch { background: #c25a1a; }
-  .pin.turn { background: #4a5a8a; }
   .steps {
     padding: 16px 20px 80px;
   }
   .steps h2 {
     font-family: Georgia, serif;
     font-size: 18px;
-    margin: 0 0 14px;
+    margin: 24px 0 12px;
     font-weight: 500;
   }
+  .steps h2:first-child { margin-top: 0; }
   .step {
     display: grid;
     grid-template-columns: 32px 1fr;
     gap: 12px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     align-items: start;
   }
   .step .n {
@@ -112,22 +135,14 @@
   }
   .step.start .n { background: #2a7a4a; }
   .step.lunch .n { background: #c25a1a; }
-  .step.turn .n { background: #4a5a8a; }
-  .step .body p { margin: 0 0 4px; }
+  .step .body p { margin: 0 0 4px; font-size: 14px; }
   .step .body .meta {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
   }
-  .meta-strip {
-    background: var(--accent-soft);
-    padding: 14px 20px;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .meta-strip strong { color: var(--accent); }
   .back-link {
     display: inline-block;
     padding: 12px 20px 0;
@@ -141,87 +156,119 @@
 <a href="./" class="back-link">← Back to itinerary</a>
 
 <header>
-  <div class="kicker">Tue 5 May 2026 · Walk 1 of the week</div>
-  <h1>Mam Tor + Great Ridge (out and back)</h1>
-  <div class="stats">
-    <span>~4-5 miles</span>
-    <span>~200m climb</span>
-    <span>~2-2.5 hrs</span>
-    <span>Drive to Castleton for lunch</span>
-  </div>
+  <div class="kicker">Tue 5 May 2026 · Decide on arrival</div>
+  <h1>Mam Tor + Great Ridge</h1>
 </header>
 
 <div id="map"></div>
 
 <div class="legend">
-  <div class="legend-row"><span class="pin start">P</span> Start &amp; end: Mam Nick NT car park</div>
+  <div class="legend-row"><span class="pin start">P</span> Mam Nick NT car park (start)</div>
   <div class="legend-row"><span class="pin">1</span> Mam Tor summit</div>
   <div class="legend-row"><span class="pin">2</span> Hollins Cross</div>
   <div class="legend-row"><span class="pin">3</span> Back Tor</div>
-  <div class="legend-row"><span class="pin turn">T</span> Turnaround: Lose Hill (or earlier if tired)</div>
-  <div class="legend-row"><span class="pin lunch">L</span> Lunch: Bull's Head, Castleton (drive 5 min from car park)</div>
+  <div class="legend-row"><span class="pin">4</span> Lose Hill summit</div>
+  <div class="legend-row"><span class="pin lunch">L</span> Bull's Head, Castleton</div>
+  <div class="legend-row"><span class="pin">5</span> Mam Tor broken road (Option B only)</div>
 </div>
 
-<div class="meta-strip">
-  <strong>Path is impossible to lose.</strong> The Great Ridge is a single spine path with a stone wall to follow. Turn around whenever you've had enough — Hollins Cross, Back Tor, or all the way to Lose Hill. Walk back to the car the same way (mostly downhill on the return), then drive 5 min down to Castleton for lunch at the Bull's Head.
+<div class="options">
+  <div class="option">
+    <div class="label">Option A · easier</div>
+    <h3>Ridge out-and-back, drive to lunch</h3>
+    <div class="stats">
+      <span>~4-5 mi</span>
+      <span>~200m climb</span>
+      <span>~2-2.5 hrs walking</span>
+    </div>
+    <p>Up Mam Tor, ridge to Lose Hill (or earlier), back the same way to the car. Drive 5 min down Winnats Pass to Castleton for lunch at the Bull's Head.</p>
+    <p><strong>Castleton parking:</strong> Bull's Head has a small car park, or use Castleton main pay-and-display (Cross Street, signed, 2 min walk to the pub).</p>
+  </div>
+  <div class="option">
+    <div class="label">Option B · full loop</div>
+    <h3>Ridge to Castleton, back via the broken road</h3>
+    <div class="stats">
+      <span>~5.5-6 mi</span>
+      <span>~350m climb</span>
+      <span>~3 hrs walking</span>
+    </div>
+    <p>Up Mam Tor, ridge all the way to Lose Hill, drop south into Castleton (250m descent), lunch at the Bull's Head, then climb back to Mam Nick via the abandoned A625 — Mam Tor's "broken road" past the landslip face. ~150m climb back from Castleton.</p>
+    <p><strong>No driving needed</strong> — the loop returns you to the car. But it's harder than yesterday's walk (which you rated Hard).</p>
+  </div>
 </div>
 
 <section class="steps">
-  <h2>Turn-by-turn</h2>
+  <h2>Both options · Mam Nick to Lose Hill (or wherever)</h2>
 
   <div class="step start">
     <div class="n">P</div>
     <div class="body">
-      <div class="meta">0 mi · Start</div>
-      <p><strong>Mam Nick NT car park</strong> at the top of the pass between Castleton and Edale. Pay-and-display. Postcode area S33 8WB. Backup: Edale village car park.</p>
+      <div class="meta">0 mi</div>
+      <p><strong>Mam Nick NT car park</strong>, top of the pass between Castleton and Edale. Pay-and-display.</p>
     </div>
   </div>
 
   <div class="step">
     <div class="n">1</div>
     <div class="body">
-      <div class="meta">0.3 mi · 10 min · Climb 100m (the only real climb)</div>
-      <p><strong>Cross the road</strong> from the car park to the path on the north side. Follow the paved path up to <strong>Mam Tor summit</strong> (517m, paved trig). Big views begin here.</p>
+      <div class="meta">0.3 mi · 10 min · 100m climb</div>
+      <p>Cross the road to the path on the north side. Paved path up to <strong>Mam Tor summit</strong> (517m, paved trig).</p>
     </div>
   </div>
 
   <div class="step">
     <div class="n">2</div>
     <div class="body">
-      <div class="meta">1.4 mi · 30 min · Gentle ridge</div>
-      <p>From Mam Tor, head <strong>east along the Great Ridge</strong>. Single obvious spine path with a stone wall. Drop a little, then arrive at <strong>Hollins Cross</strong> (the saddle, junction with paths down to Edale and Castleton). Solid turnaround point if you're feeling tired.</p>
+      <div class="meta">1.4 mi · 30 min · gentle</div>
+      <p>East along the Great Ridge — single spine path, stone wall on your left. Drop a little to <strong>Hollins Cross</strong> (saddle, paths down to Edale and Castleton). Legitimate turnaround if you've had enough.</p>
     </div>
   </div>
 
   <div class="step">
     <div class="n">3</div>
     <div class="body">
-      <div class="meta">2.1 mi · 20 min · Short scrambly bit</div>
-      <p>Continue east along the ridge. Slight rise to <strong>Back Tor</strong> — short scrambly climb up the rocky step (the ridge's drama bit). Another good turnaround point.</p>
-    </div>
-  </div>
-
-  <div class="step turn">
-    <div class="n">T</div>
-    <div class="body">
-      <div class="meta">2.8 mi · 20 min · Final ridge push</div>
-      <p>Final push along the ridge to <strong>Lose Hill summit</strong> (476m, trig). End of the ridge. <strong>Turn around here</strong> (or earlier — Hollins Cross and Back Tor are both legitimate stop points).</p>
+      <div class="meta">2.1 mi · 20 min · short scramble</div>
+      <p>Continue east. Short rocky scramble up <strong>Back Tor</strong>. Another good turnaround.</p>
     </div>
   </div>
 
   <div class="step">
-    <div class="n">←</div>
+    <div class="n">4</div>
     <div class="body">
-      <div class="meta">Return · same way · mostly easy/downhill</div>
-      <p>Walk the ridge back to Mam Tor, then down to the car. The descent off Mam Tor at the end is steep but short. From Lose Hill that's about 2.8 miles back; from Hollins Cross it's about 1.4 miles back.</p>
+      <div class="meta">2.8 mi · 20 min</div>
+      <p>Last push to <strong>Lose Hill summit</strong> (476m, trig). End of the ridge. Decide here.</p>
     </div>
   </div>
 
+  <h2>If Option A (decide on the day)</h2>
+  <div class="step">
+    <div class="n">←</div>
+    <div class="body">
+      <div class="meta">return same way · mostly downhill</div>
+      <p>Walk back along the ridge to Mam Tor, then down to the car. ~2.5-3 miles back depending on where you turned around.</p>
+    </div>
+  </div>
   <div class="step lunch">
     <div class="n">L</div>
     <div class="body">
-      <div class="meta">Drive 5 min · Castleton</div>
-      <p>Back at the car, <strong>drive down to Castleton</strong> via the A6187 (Winnats Pass road, very scenic). Park at Castleton main car park. <strong>Bull's Head</strong> is in the village centre, walk-in fine on a Tuesday. Or Three Roofs Café / The George if it's late.</p>
+      <div class="meta">5 min drive · Winnats Pass</div>
+      <p>From Mam Nick, drive south down <strong>Winnats Pass</strong> (steep, narrow, dramatic — low gear, take it slow) to Castleton. Park at Bull's Head or Cross Street car park (2 min walk).</p>
+    </div>
+  </div>
+
+  <h2>If Option B (full loop)</h2>
+  <div class="step lunch">
+    <div class="n">L</div>
+    <div class="body">
+      <div class="meta">3.8 mi · 25 min · 250m descent</div>
+      <p>Drop south off Lose Hill into Castleton. Well-signed footpath through fields. Lunch at Bull's Head, Castleton (centre of village).</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="n">5</div>
+    <div class="body">
+      <div class="meta">5.5 mi · 50 min · 150m climb back</div>
+      <p>Out of Castleton west on the B6061 (Mam Tor Road). Road bends right and becomes the abandoned A625 — broken from the 1979 Mam Tor landslip, now a footpath past the landslip face. Photogenic. Climb back up to Mam Nick.</p>
     </div>
   </div>
 </section>
@@ -234,27 +281,26 @@
     hollinsCross: [53.3499, -1.7901],
     backTor: [53.3508, -1.7775],
     loseHill: [53.3494, -1.7626],
-    castleton: [53.3438, -1.7770]
+    castleton: [53.3438, -1.7770],
+    brokenRoad: [53.3460, -1.7975]
   };
 
-  const map = L.map('map').setView([53.3490, -1.7860], 13);
+  const map = L.map('map').setView([53.3475, -1.7900], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
     attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // Out-and-back route along the ridge
-  const ridgeRoute = [
-    points.P,
-    points.mamTor,
-    points.hollinsCross,
-    points.backTor,
-    points.loseHill
-  ];
-  L.polyline(ridgeRoute, { color: '#8a4a2a', weight: 4, opacity: 0.9 }).addTo(map);
+  // Common ridge path (both options)
+  const ridge = [points.P, points.mamTor, points.hollinsCross, points.backTor, points.loseHill];
+  L.polyline(ridge, { color: '#8a4a2a', weight: 4, opacity: 0.9 }).addTo(map);
 
-  // Drive to Castleton (dotted)
-  L.polyline([points.P, points.castleton], { color: '#c25a1a', weight: 3, opacity: 0.6, dashArray: '6, 8' }).addTo(map);
+  // Option B continuation (Lose Hill -> Castleton -> broken road -> Mam Nick) - solid
+  const optB = [points.loseHill, points.castleton, points.brokenRoad, points.P];
+  L.polyline(optB, { color: '#8a4a2a', weight: 4, opacity: 0.5, dashArray: '2,4' }).addTo(map);
+
+  // Option A drive Mam Nick -> Castleton (dotted orange)
+  L.polyline([points.P, points.castleton], { color: '#c25a1a', weight: 3, opacity: 0.6, dashArray: '8,8' }).addTo(map);
 
   function pin(label, color) {
     return L.divIcon({
@@ -269,8 +315,9 @@
   L.marker(points.mamTor, { icon: pin('1', '#8a4a2a') }).addTo(map).bindPopup('Mam Tor summit');
   L.marker(points.hollinsCross, { icon: pin('2', '#8a4a2a') }).addTo(map).bindPopup('Hollins Cross');
   L.marker(points.backTor, { icon: pin('3', '#8a4a2a') }).addTo(map).bindPopup('Back Tor');
-  L.marker(points.loseHill, { icon: pin('T', '#4a5a8a') }).addTo(map).bindPopup('Lose Hill — turnaround');
-  L.marker(points.castleton, { icon: pin('L', '#c25a1a') }).addTo(map).bindPopup("Bull's Head, Castleton — drive here for lunch");
+  L.marker(points.loseHill, { icon: pin('4', '#8a4a2a') }).addTo(map).bindPopup('Lose Hill summit');
+  L.marker(points.castleton, { icon: pin('L', '#c25a1a') }).addTo(map).bindPopup("Bull's Head, Castleton");
+  L.marker(points.brokenRoad, { icon: pin('5', '#8a4a2a') }).addTo(map).bindPopup('Mam Tor broken road');
 
   map.fitBounds(L.latLngBounds(Object.values(points)).pad(0.15));
 </script>
