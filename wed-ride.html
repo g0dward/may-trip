@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Wed ride — Sheldon + Magpie Mine + Ashford</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root {
+    --bg: #f6f2ec;
+    --paper: #fbf8f3;
+    --ink: #1a1715;
+    --muted: #6b6259;
+    --rule: #d9d1c4;
+    --accent: #8a4a2a;
+    --accent-soft: #e9dcc9;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 20px 20px 12px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  header .kicker {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 {
+    font-family: Georgia, serif;
+    font-weight: 500;
+    font-size: 24px;
+    margin: 4px 0 0;
+    letter-spacing: -0.01em;
+  }
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .stats span { padding-right: 16px; border-right: 1px solid var(--rule); }
+  .stats span:last-child { border-right: 0; }
+  #map {
+    width: 100%;
+    height: 55vh;
+    min-height: 360px;
+    background: var(--accent-soft);
+  }
+  .legend {
+    padding: 14px 20px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .legend-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+  .pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .pin.start { background: #2a7a4a; }
+  .pin.peak { background: #4a5a8a; }
+  .steps {
+    padding: 16px 20px 80px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: start;
+  }
+  .step .n {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .step.start .n { background: #2a7a4a; }
+  .step.peak .n { background: #4a5a8a; }
+  .step .body p { margin: 0 0 4px; font-size: 14px; }
+  .step .body .meta {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  .meta-strip {
+    background: var(--accent-soft);
+    padding: 14px 20px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .back-link {
+    display: inline-block;
+    padding: 12px 20px 0;
+    font-size: 13px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<a href="./" class="back-link">← Back to itinerary</a>
+
+<header>
+  <div class="kicker">Wed 6 May 2026 · afternoon ride</div>
+  <h1>Sheldon + Magpie Mine + Ashford loop</h1>
+  <div class="stats">
+    <span>~10-12 miles</span>
+    <span>~150m climb (Sheldon)</span>
+    <span>~2 hours</span>
+    <span>All lanes</span>
+  </div>
+</header>
+
+<div id="map"></div>
+
+<div class="legend">
+  <div class="legend-row"><span class="pin start">P</span> Start &amp; end: Little Longstone (Packhorse Inn)</div>
+  <div class="legend-row"><span class="pin">1</span> Great Longstone</div>
+  <div class="legend-row"><span class="pin">2</span> Ashford-in-the-Water (Sheepwash Bridge)</div>
+  <div class="legend-row"><span class="pin peak">3</span> Sheldon (climb up to)</div>
+  <div class="legend-row"><span class="pin">4</span> Magpie Mine (lead mine ruin)</div>
+  <div class="legend-row"><span class="pin">5</span> Lanes back via the limestone fields</div>
+</div>
+
+<div class="meta-strip">
+  Rough route — the lanes are obvious once you're on them. Sheldon is the only real climb (after Ashford); ebike on full assist eats it. From Magpie Mine, take the lane east back toward Ashford or loop further north on the back lanes if you want extra mileage. Keep an eye on time so you're back by ~6pm to rest before dinner.
+</div>
+
+<section class="steps">
+
+  <div class="step start">
+    <div class="n">P</div>
+    <div class="body">
+      <div class="meta">0 mi · Start</div>
+      <p>Out of the Packhorse, through Little Longstone east on the lane.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">1</div>
+    <div class="body">
+      <div class="meta">~1 mi · gentle</div>
+      <p>Through <strong>Great Longstone</strong>. Continue south on the lane.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">2</div>
+    <div class="body">
+      <div class="meta">~3 mi · gentle descent</div>
+      <p>Drop down to <strong>Ashford-in-the-Water</strong>. Sheepwash Bridge (15th century) for a quick photo. Then turn west out of the village.</p>
+    </div>
+  </div>
+
+  <div class="step peak">
+    <div class="n">3</div>
+    <div class="body">
+      <div class="meta">~5 mi · 150m climb · the only real ascent</div>
+      <p>Climb west up the lane to <strong>Sheldon</strong> — handsome stone village on the high plateau, less-trodden, big sky. Stay seated, full assist, low gear. Spin up.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">4</div>
+    <div class="body">
+      <div class="meta">~6 mi · short detour</div>
+      <p>Out of Sheldon south-west, follow the lane to the bridleway sign for <strong>Magpie Mine</strong>. The ruin sits just off the lane in open moorland — best-preserved lead mine in the Peaks, photogenic, big-sky views all around.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">5</div>
+    <div class="body">
+      <div class="meta">~7-10 mi · rolling lanes</div>
+      <p>Back lanes through the limestone fields toward Monyash road, loop back east via the quiet network of lanes through Kirkdale / Little Shacklow. Pick whichever lanes look good — they all eventually drop back toward Ashford or Hassop.</p>
+    </div>
+  </div>
+
+  <div class="step start">
+    <div class="n">P</div>
+    <div class="body">
+      <div class="meta">~10-12 mi · home</div>
+      <p>Back through Ashford or Hassop, north through Great Longstone to Little Longstone. Done.</p>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const points = {
+    start: [53.2369, -1.7210],
+    greatLongstone: [53.2336, -1.7015],
+    ashford: [53.2262, -1.7011],
+    sheldon: [53.2156, -1.7470],
+    magpieMine: [53.2156, -1.7478],
+    backLanes: [53.2225, -1.7600],
+    hassop: [53.2310, -1.6810]
+  };
+
+  const map = L.map('map').setView([53.2270, -1.7240], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  // Rough route as a polyline
+  const route = [
+    points.start,
+    points.greatLongstone,
+    points.ashford,
+    points.sheldon,
+    points.magpieMine,
+    points.backLanes,
+    points.hassop,
+    points.start
+  ];
+  L.polyline(route, { color: '#8a4a2a', weight: 4, opacity: 0.85, dashArray: '0' }).addTo(map);
+
+  function pin(label, color) {
+    return L.divIcon({
+      html: `<div style="background:${color};color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);">${label}</div>`,
+      className: '',
+      iconSize: [26, 26],
+      iconAnchor: [13, 13]
+    });
+  }
+
+  L.marker(points.start, { icon: pin('P', '#2a7a4a') }).addTo(map).bindPopup('Little Longstone (start)');
+  L.marker(points.greatLongstone, { icon: pin('1', '#8a4a2a') }).addTo(map).bindPopup('Great Longstone');
+  L.marker(points.ashford, { icon: pin('2', '#8a4a2a') }).addTo(map).bindPopup('Ashford-in-the-Water');
+  L.marker(points.sheldon, { icon: pin('3', '#4a5a8a') }).addTo(map).bindPopup('Sheldon — climb');
+  L.marker(points.magpieMine, { icon: pin('4', '#8a4a2a') }).addTo(map).bindPopup('Magpie Mine');
+  L.marker(points.backLanes, { icon: pin('5', '#8a4a2a') }).addTo(map).bindPopup('Back lanes loop');
+
+  map.fitBounds(L.latLngBounds(Object.values(points)).pad(0.15));
+</script>
+
+</body>
+</html>
