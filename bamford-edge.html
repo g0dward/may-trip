@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Bamford Edge — Sat 9 May 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root {
+    --bg: #f6f2ec;
+    --paper: #fbf8f3;
+    --ink: #1a1715;
+    --muted: #6b6259;
+    --rule: #d9d1c4;
+    --accent: #8a4a2a;
+    --accent-soft: #e9dcc9;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 20px 20px 12px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  header .kicker {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 {
+    font-family: Georgia, serif;
+    font-weight: 500;
+    font-size: 24px;
+    margin: 4px 0 0;
+    letter-spacing: -0.01em;
+  }
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .stats span { padding-right: 16px; border-right: 1px solid var(--rule); }
+  .stats span:last-child { border-right: 0; }
+  #map {
+    width: 100%;
+    height: 50vh;
+    min-height: 320px;
+    background: var(--accent-soft);
+  }
+  .legend {
+    padding: 14px 20px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .legend-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+  .pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .pin.start { background: #2a7a4a; }
+  .pin.alt { background: #4a5a8a; }
+  .pin.peak { background: #c25a1a; }
+  .meta-strip {
+    background: var(--accent-soft);
+    padding: 14px 20px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .meta-strip strong { color: var(--accent); }
+  .steps {
+    padding: 16px 20px 80px;
+  }
+  .steps h2 {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    margin: 24px 0 12px;
+    font-weight: 500;
+  }
+  .steps h2:first-child { margin-top: 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: start;
+  }
+  .step .n {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .step.start .n { background: #2a7a4a; }
+  .step.peak .n { background: #c25a1a; }
+  .step .body p { margin: 0 0 4px; font-size: 14px; }
+  .step .body .meta {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  .back-link {
+    display: inline-block;
+    padding: 12px 20px 0;
+    font-size: 13px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<a href="./" class="back-link">← Back to itinerary</a>
+
+<header>
+  <div class="kicker">Sat 9 May 2026 · final walk on the way home</div>
+  <h1>Bamford Edge — out and back</h1>
+  <div class="stats">
+    <span>~2-3 miles</span>
+    <span>~150m climb</span>
+    <span>~1-1.5 hours</span>
+    <span>The Ladybower view</span>
+  </div>
+</header>
+
+<div id="map"></div>
+
+<div class="legend">
+  <div class="legend-row"><span class="pin start">P</span> Primary parking: New Road layby (free, 6-8 spaces, fills early)</div>
+  <div class="legend-row"><span class="pin alt">P2</span> Backup parking: Bamford village pay-and-display</div>
+  <div class="legend-row"><span class="pin">1</span> Path up from New Road</div>
+  <div class="legend-row"><span class="pin peak">2</span> Bamford Edge — the iconic Ladybower view</div>
+  <div class="legend-row"><span class="pin">3</span> Continue along the edge (turn around when ready)</div>
+</div>
+
+<div class="meta-strip">
+  <strong>Path is impossible to lose.</strong> Steep up through fields/bracken from the layby to the edge, then walk along the gritstone clifftop with Ladybower Reservoir below for as far as you fancy. Turn around when you've had enough — same way back. Pure out-and-back.
+</div>
+
+<section class="steps">
+  <h2>Turn-by-turn</h2>
+
+  <div class="step start">
+    <div class="n">P</div>
+    <div class="body">
+      <div class="meta">0 mi · Start (New Road layby)</div>
+      <p><strong>New Road / Hurstclough Lane</strong> above Bamford. Free layby, only 6-8 spaces — fills by 9-10am on dry weekends. If full, drop down 5 min into Bamford village and use the <strong>pay-and-display car park</strong> instead (S33 0BN).</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">1</div>
+    <div class="body">
+      <div class="meta">0.3 mi · 10-15 min · 100m steep climb</div>
+      <p>From the layby, take the signed footpath through fields and bracken up onto the edge. Steep but short — one functional climb. Pace it.</p>
+    </div>
+  </div>
+
+  <div class="step peak">
+    <div class="n">2</div>
+    <div class="body">
+      <div class="meta">~0.6 mi · 15-20 min along the edge</div>
+      <p>Top out on <strong>Bamford Edge</strong>. Walk north-east along the gritstone clifftop. The <strong>iconic Ladybower view</strong> opens up after a few hundred metres — the photographed angle, reservoir snaking through the valley below. Lots of natural seating on the rocks for a snack.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">3</div>
+    <div class="body">
+      <div class="meta">~1 mi · 20-30 min · or turn around earlier</div>
+      <p>Continue along the edge as far as you fancy — it runs for about a mile of clifftop, view the whole way. Turn around whenever. Walk the same way back.</p>
+    </div>
+  </div>
+
+  <div class="step start">
+    <div class="n">P</div>
+    <div class="body">
+      <div class="meta">~2-3 mi · ~1-1.5 hrs total · home</div>
+      <p>Same route down. Steep descent at the end, watch your knees. Back at the car, drive south on A6013 → A57 → M1 → home.</p>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const points = {
+    layby: [53.3472, -1.6840],
+    bamfordVillage: [53.3438, -1.6900],
+    pathUp: [53.3490, -1.6810],
+    bamfordEdge: [53.3520, -1.6760],
+    edgeFar: [53.3560, -1.6700]
+  };
+
+  const map = L.map('map').setView([53.3500, -1.6790], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  // Walking route (out and back is the same line)
+  const route = [
+    points.layby,
+    points.pathUp,
+    points.bamfordEdge,
+    points.edgeFar
+  ];
+  L.polyline(route, { color: '#8a4a2a', weight: 4, opacity: 0.9 }).addTo(map);
+
+  function pin(label, color) {
+    return L.divIcon({
+      html: `<div style="background:${color};color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3);">${label}</div>`,
+      className: '',
+      iconSize: [26, 26],
+      iconAnchor: [13, 13]
+    });
+  }
+
+  L.marker(points.layby, { icon: pin('P', '#2a7a4a') }).addTo(map).bindPopup('New Road layby (free, fills early)');
+  L.marker(points.bamfordVillage, { icon: pin('P2', '#4a5a8a') }).addTo(map).bindPopup('Bamford village pay-and-display (backup)');
+  L.marker(points.pathUp, { icon: pin('1', '#8a4a2a') }).addTo(map).bindPopup('Path up to the edge');
+  L.marker(points.bamfordEdge, { icon: pin('2', '#c25a1a') }).addTo(map).bindPopup('Bamford Edge — Ladybower view');
+  L.marker(points.edgeFar, { icon: pin('3', '#8a4a2a') }).addTo(map).bindPopup('Continue along the edge');
+
+  map.fitBounds(L.latLngBounds(Object.values(points)).pad(0.2));
+</script>
+
+</body>
+</html>
